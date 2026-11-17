@@ -11,17 +11,20 @@ var camera_pitch := 0.0
 
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
-@onready var camera: Camera3D = $CameraPivot/SpringArm3D/Camera3D
 @onready var body_mesh: MeshInstance3D = $BodyMesh
 
 func _ready() -> void:
-    Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+    if not OS.has_feature("android"):
+        Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+
+func look_by_drag(delta: Vector2) -> void:
+    rotate_y(-delta.x * mouse_sensitivity * 2.0)
+    camera_pitch = clamp(camera_pitch - delta.y * mouse_sensitivity * 2.0, -1.1, 1.1)
+    camera_pivot.rotation.x = camera_pitch
 
 func _unhandled_input(event: InputEvent) -> void:
     if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-        rotate_y(-event.relative.x * mouse_sensitivity)
-        camera_pitch = clamp(camera_pitch - event.relative.y * mouse_sensitivity, -1.1, 1.1)
-        camera_pivot.rotation.x = camera_pitch
+        look_by_drag(event.relative)
 
     if event.is_action_pressed("switch_camera"):
         first_person = not first_person
