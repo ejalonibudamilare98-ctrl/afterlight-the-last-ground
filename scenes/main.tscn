@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
 
@@ -9,9 +9,18 @@ size = Vector2(80, 80)
 albedo_color = Color(0.19, 0.22, 0.2, 1)
 roughness = 1.0
 
-[node name="Main" type="Node3D"]
+[sub_resource type="BoxShape3D" id="GroundShape"]
+size = Vector3(80, 0.2, 80)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[sub_resource type="CapsuleShape3D" id="PlayerShape"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="PlayerMesh"]
+radius = 0.35
+height = 1.8
+
+[node name="Main" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 rotation = Vector3(-0.9, -0.5, 0)
@@ -23,17 +32,18 @@ light_energy = 1.1
 mesh = SubResource("PlaneMesh_ground")
 material_override = SubResource("Material_ground")
 [node name="Collision" type="CollisionShape3D" parent="Ground"]
-shape = SubResource("PlaneMesh_ground")
+shape = SubResource("GroundShape")
+position = Vector3(0, -0.1, 0)
 
 [node name="Player" type="CharacterBody3D" parent="."]
 position = Vector3(0, 1, 0)
 script = ExtResource("1_player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
-shape = CapsuleShape3D.new()
+shape = SubResource("PlayerShape")
 
 [node name="BodyMesh" type="MeshInstance3D" parent="Player"]
-mesh = CapsuleMesh.new()
+mesh = SubResource("PlayerMesh")
 position = Vector3(0, 0.9, 0)
 
 [node name="CameraPivot" type="Node3D" parent="Player"]
