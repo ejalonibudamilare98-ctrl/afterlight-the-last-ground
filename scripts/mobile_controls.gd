@@ -61,7 +61,7 @@ func _start_touch(index: int, pos: Vector2) -> void:
 func _update_stick(pos: Vector2) -> void:
     var size := get_viewport_rect().size
     var base := Vector2(115.0, size.y - 125.0)
-    stick_vector = (pos - base).limit_length(1.0) if pos.distance_to(base) <= STICK_RADIUS else (pos - base).normalized()
+    stick_vector = (pos - base).limit_length(STICK_RADIUS) / STICK_RADIUS
     if stick_vector.length() < STICK_DEADZONE / STICK_RADIUS:
         stick_vector = Vector2.ZERO
     _set_action("move_left", stick_vector.x < -0.25)
