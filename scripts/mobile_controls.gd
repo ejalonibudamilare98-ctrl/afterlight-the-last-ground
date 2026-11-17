@@ -8,6 +8,7 @@ var stick_touch := -1
 var jump_touch := -1
 var run_touch := -1
 var look_touch := -1
+var mouse_look := false
 var stick_vector := Vector2.ZERO
 var player: CharacterBody3D
 
@@ -37,10 +38,16 @@ func _input(event: InputEvent) -> void:
     elif event is InputEventScreenDrag:
         if event.index == stick_touch:
             _update_stick(event.position)
-        elif player and event.index != jump_touch and event.index != run_touch and event.position.x >= get_viewport_rect().size.x * 0.45:
+        elif event.index == look_touch and player:
             player.look_by_drag(event.relative)
-    elif event is InputEventScreenTouch and not event.pressed:
-        queue_redraw()
+    elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+        if event.pressed:
+            var size := get_viewport_rect().size
+            mouse_look = event.position.x >= size.x * 0.45
+        else:
+            mouse_look = false
+    elif event is InputEventMouseMotion and mouse_look and player:
+        player.look_by_drag(event.relative)
 
 func _start_touch(index: int, pos: Vector2) -> void:
     var size := get_viewport_rect().size
