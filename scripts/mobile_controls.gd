@@ -37,7 +37,7 @@ func _input(event: InputEvent) -> void:
     elif event is InputEventScreenDrag:
         if event.index == stick_touch:
             _update_stick(event.position)
-        elif event.index == look_touch and player:
+        elif player and event.index != jump_touch and event.index != run_touch and event.position.x >= get_viewport_rect().size.x * 0.45:
             player.look_by_drag(event.relative)
     elif event is InputEventScreenTouch and not event.pressed:
         queue_redraw()
